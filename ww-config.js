@@ -25,6 +25,10 @@ export default {
       defaultValue: "Add new option...",
       bindable: true,
     },
+    onOptionAddCallback: {
+      label: { en: "On Option Add (Function)" },
+      type: "function", // ✅ function prop
+    },
   },
   events: [
     {

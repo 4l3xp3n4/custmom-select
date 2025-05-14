@@ -44,6 +44,7 @@ export default {
       if (newVal && !this.internalOptions.includes(newVal)) {
         this.internalOptions.push(newVal);
         this.content.options.push(newVal);
+        this.content && this.content.onOptionAddCallback && this.content.onOptionAddCallback(newVal);
         console.log("event", newVal)
         this.selected = newVal;
         this.$emit('option-added', newVal); // ✅ emit custom event
