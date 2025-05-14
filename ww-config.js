@@ -28,6 +28,7 @@ export default {
     onOptionAddCallback: {
       label: { en: "On Option Add (Function)" },
       type: "function", // ✅ function prop
+      bindable: true,
     },
   },
   events: [
