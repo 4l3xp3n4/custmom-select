@@ -1,11 +1,24 @@
 <template>
   <div class="selector-wrapper">
+    <!-- 🔍 Search Field -->
+    <input
+      v-model="searchQuery"
+      class="input-box"
+      placeholder="Search options..."
+    />
+
+    <!-- 🧩 Filtered Select -->
     <select v-model="selected" @change="emitSelection" class="select-box">
-      <option v-for="(option, index) in [...new Set(internalOptions)]" :key="index" :value="option">
+      <option
+        v-for="(option, index) in filteredOptions"
+        :key="index"
+        :value="option"
+      >
         {{ option }}
       </option>
     </select>
 
+    <!-- ➕ New Option Input -->
     <input
       v-model="newOption"
       @keyup.enter="addNewOption"
@@ -27,8 +40,17 @@ export default {
     return {
       internalOptions: this.content.options || [],
       newOption: '',
+      searchQuery: '', // 🔍 for filtering
       selected: this.content.selectedValue || '',
     };
+  },
+  computed: {
+    filteredOptions() {
+      const unique = [...new Set(this.internalOptions)];
+      if (!this.searchQuery) return unique;
+      const q = this.searchQuery.toLowerCase();
+      return unique.filter((opt) => opt.toLowerCase().includes(q));
+    },
   },
   watch: {
     selected(newVal) {
@@ -38,16 +60,16 @@ export default {
   methods: {
     emitSelection() {
       this.$emit('update:selectedValue', this.selected);
-      this.content && this.content.setStateSelection && this.content.setStateSelection(this.selected);
+      this.content?.setStateSelection?.(this.selected);
     },
     addNewOption() {
       const newVal = this.newOption.trim();
       if (newVal && !this.internalOptions.includes(newVal)) {
         this.internalOptions.push(newVal);
-        this.content && this.content.onOptionAddCallback && this.content.onOptionAddCallback(newVal);
-        this.content && this.content.setStateSelection && this.content.setStateSelection(newVal);
+        this.content?.onOptionAddCallback?.(newVal);
+        this.content?.setStateSelection?.(newVal);
         this.selected = newVal;
-        this.$emit('option-added', newVal); // ✅ emit custom event
+        this.$emit('option-added', newVal);
       }
       this.newOption = '';
     },
