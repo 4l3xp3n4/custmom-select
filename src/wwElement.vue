@@ -1,7 +1,7 @@
 <template>
   <div class="selector-wrapper">
     <select v-model="selected" @change="emitSelection" class="select-box">
-      <option v-for="(option, index) in internalOptions" :key="index" :value="option">
+      <option v-for="(option, index) in [...new Set(internalOptions)]" :key="index" :value="option">
         {{ option }}
       </option>
     </select>
