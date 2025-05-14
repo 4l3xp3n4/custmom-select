@@ -5,15 +5,12 @@ export default {
     },
   },
   properties: {
-    content: {
+    initialOptions: {
       label: {
-        en: "Content",
+        en: "Options",
       },
-      type: "Array",
+      type: "array",
       defaultValue: [],
     },
   },
 };
-
-
-
