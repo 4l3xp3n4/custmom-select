@@ -1,18 +1,17 @@
 <template>
-  <div class="select-wrapper">
-    <div class="select-container">
-      <select v-model="selected" class="select-box">
-        <option v-for="(option, index) in options" :key="index" :value="option">
-          {{ option }}
-        </option>
-      </select>
-      <input
-        v-model="newOption"
-        @keyup.enter="addOption"
-        class="input-box"
-        placeholder="Add new option"
-      />
-    </div>
+  <div class="selector-wrapper">
+    <select v-model="selected" @change="emitSelection" class="select-box">
+      <option v-for="(option, index) in internalOptions" :key="index" :value="option">
+        {{ option }}
+      </option>
+    </select>
+
+    <input
+      v-model="newOption"
+      @keyup.enter="addNewOption"
+      class="input-box"
+      :placeholder="placeholder"
+    />
   </div>
 </template>
 
@@ -22,24 +21,30 @@ export default {
     content: {
       type: Object,
       required: true,
-      default: () => ({
-        initialOptions: [],
-      }),
     },
   },
   data() {
     return {
-      options: this.content.initialOptions || [],
+      internalOptions: this.content.options || [],
       newOption: '',
-      selected: '',
+      selected: this.content.selectedValue || '',
     };
   },
+  watch: {
+    selected(newVal) {
+      this.$emit('update:selectedValue', newVal);
+    },
+  },
   methods: {
-    addOption() {
-      const trimmed = this.newOption.trim();
-      if (trimmed && !this.options.includes(trimmed)) {
-        this.options.push(trimmed);
-        this.selected = trimmed;
+    emitSelection() {
+      this.$emit('update:selectedValue', this.selected);
+    },
+    addNewOption() {
+      const newVal = this.newOption.trim();
+      if (newVal && !this.internalOptions.includes(newVal)) {
+        this.internalOptions.push(newVal);
+        this.selected = newVal;
+        this.$emit('option-added', newVal); // ✅ emit custom event
       }
       this.newOption = '';
     },
@@ -47,28 +52,18 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.select-wrapper {
+<style scoped>
+.selector-wrapper {
   display: flex;
+  gap: 8px;
   flex-direction: column;
-  gap: 10px;
-}
-
-.select-container {
-  display: flex;
-  gap: 10px;
-  align-items: center;
 }
 
 .select-box,
 .input-box {
   padding: 8px;
+  font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 16px;
-}
-
-.input-box {
-  flex: 1;
 }
 </style>

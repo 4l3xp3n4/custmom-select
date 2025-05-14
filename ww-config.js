@@ -1,18 +1,35 @@
 export default {
   editor: {
     label: {
-      en: "Custom select",
+      en: "Custom Selector with Add",
     },
+    icon: "select",
+    category: "Form",
   },
   properties: {
-    initialOptions: {
-      label: {
-        en: "Options",
-      },
+    options: {
+      label: { en: "Options" },
       type: "array",
-      defaultValue: [1,2,3],
+      defaultValue: ["Option 1", "Option 2"],
       bindable: true,
-      responsive: true,
+    },
+    selectedValue: {
+      label: { en: "Selected Value" },
+      type: "string",
+      defaultValue: "",
+      bindable: true,
+    },
+    placeholder: {
+      label: { en: "Placeholder" },
+      type: "string",
+      defaultValue: "Add new option...",
+      bindable: true,
     },
   },
+  events: [
+    {
+      name: "option-added",
+      label: { en: "When an option is added" },
+    },
+  ],
 };
