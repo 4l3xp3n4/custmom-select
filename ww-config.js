@@ -1,16 +1,19 @@
 export default {
   editor: {
     label: {
-      en: "My Element",
+      en: "Custom select",
     },
   },
   properties: {
-    textColor: {
+    content: {
       label: {
-        en: "Text color",
+        en: "Content",
       },
-      type: "Color",
-      defaultValue: "#F23636",
+      type: "Array",
+      defaultValue: [],
     },
   },
 };
+
+
+
