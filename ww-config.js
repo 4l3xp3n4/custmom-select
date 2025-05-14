@@ -11,6 +11,7 @@ export default {
       },
       type: "array",
       defaultValue: [1,2,3],
+      bindable: true,
     },
   },
 };
