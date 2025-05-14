@@ -30,6 +30,11 @@ export default {
       type: "function", // ✅ function prop
       bindable: true,
     },
+    setStateSelection: {
+      label: { en: "On select" },
+      type: "function", // ✅ function prop
+      bindable: true,
+    },
   },
   events: [
     {

@@ -38,13 +38,14 @@ export default {
   methods: {
     emitSelection() {
       this.$emit('update:selectedValue', this.selected);
+      this.content && this.content.setStateSelection && this.content.setStateSelection(this.selected);
     },
     addNewOption() {
       const newVal = this.newOption.trim();
       if (newVal && !this.internalOptions.includes(newVal)) {
         this.internalOptions.push(newVal);
         this.content && this.content.onOptionAddCallback && this.content.onOptionAddCallback(newVal);
-        console.log("event", newVal)
+        this.content && this.content.setStateSelection && this.content.setStateSelection(newVal);
         this.selected = newVal;
         this.$emit('option-added', newVal); // ✅ emit custom event
       }
