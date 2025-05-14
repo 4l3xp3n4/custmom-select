@@ -10,7 +10,7 @@ export default {
         en: "Options",
       },
       type: "array",
-      defaultValue: [],
+      defaultValue: [1,2,3],
     },
   },
 };
