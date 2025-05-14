@@ -1,30 +1,23 @@
 <template>
   <div class="selector-wrapper">
-    <!-- 🔍 Search Field -->
     <input
-      v-model="searchQuery"
+      v-model="inputValue"
+      @keyup.enter="handleEnter"
+      @input="filterOptions"
       class="input-box"
-      placeholder="Search options..."
+      :placeholder="placeholder || 'Search or add...'"
     />
 
-    <!-- 🧩 Filtered Select -->
-    <select v-model="selected" @change="emitSelection" class="select-box">
-      <option
+    <!-- Dropdown suggestions -->
+    <ul v-if="filteredOptions.length && showDropdown" class="dropdown">
+      <li
         v-for="(option, index) in filteredOptions"
         :key="index"
-        :value="option"
+        @click="selectOption(option)"
       >
         {{ option }}
-      </option>
-    </select>
-
-    <!-- ➕ New Option Input -->
-    <input
-      v-model="newOption"
-      @keyup.enter="addNewOption"
-      class="input-box"
-      :placeholder="placeholder"
-    />
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -38,19 +31,12 @@ export default {
   },
   data() {
     return {
-      internalOptions: this.content.options || [],
-      newOption: '',
-      searchQuery: '', // 🔍 for filtering
+      internalOptions: [...new Set(this.content.options || [])],
+      inputValue: '',
       selected: this.content.selectedValue || '',
+      filteredOptions: [],
+      showDropdown: false,
     };
-  },
-  computed: {
-    filteredOptions() {
-      const unique = [...new Set(this.internalOptions)];
-      if (!this.searchQuery) return unique;
-      const q = this.searchQuery.toLowerCase();
-      return unique.filter((opt) => opt.toLowerCase().includes(q));
-    },
   },
   watch: {
     selected(newVal) {
@@ -58,37 +44,9 @@ export default {
     },
   },
   methods: {
-    emitSelection() {
-      this.$emit('update:selectedValue', this.selected);
-      this.content?.setStateSelection?.(this.selected);
-    },
-    addNewOption() {
-      const newVal = this.newOption.trim();
-      if (newVal && !this.internalOptions.includes(newVal)) {
-        this.internalOptions.push(newVal);
-        this.content?.onOptionAddCallback?.(newVal);
-        this.content?.setStateSelection?.(newVal);
-        this.selected = newVal;
-        this.$emit('option-added', newVal);
-      }
-      this.newOption = '';
-    },
-  },
-};
-</script>
-
-<style scoped>
-.selector-wrapper {
-  display: flex;
-  gap: 8px;
-  flex-direction: column;
-}
-
-.select-box,
-.input-box {
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-</style>
+    filterOptions() {
+      const q = this.inputValue.toLowerCase();
+      this.filteredOptions = this.internalOptions.filter(opt =>
+        opt.toLowerCase().includes(q)
+      );
+      this.showDropdown = this.filteredOptions
